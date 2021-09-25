@@ -32,11 +32,11 @@ public:
 		//Sleep(1000);//延时1s
 		//controlMouse->touchPosition(1149, 223); // 点击Normal模式
 		//controlMouse->touchPosition(1164,771);//点击选择按钮
-		controlMouse->touchPosition(594, 632);//选择法师
-		controlMouse->touchPosition(1164, 760);//点击Play按钮
+		controlMouse->touchPosition(400, 250);//选择法师
+		controlMouse->touchPosition(1160, 740);//点击Play按钮
 		//controlMouse->touchPosition(1187, 193); // 选择猎人
-		controlMouse->touchPosition(1187, 222); // 选择战士
-		controlMouse->touchPosition(1164, 760); //点击Play按钮
+		controlMouse->touchPosition(1160, 240); // 选择战士
+		controlMouse->touchPosition(1160, 740); //点击Play按钮
 		Sleep(6000);//延时6s
 		gameInfo.state = STATE_CHANGECARDSTART;
 	}

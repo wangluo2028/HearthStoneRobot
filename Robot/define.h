@@ -30,7 +30,7 @@ const int OutSideY = 1500;
 
 const int HearthWindowWidth = 1600;
 const int HearthWindowHeight = 900;
-#define CARDGAME "Hearthstone"
+#define CARDGAME "Â¯Ê¯´«Ëµ"
 #define CARDSINFO "HS/Magic1/"
 #define CARDSDESCRPIT "HS/Magic1/cardInfo.txt"
 //std::string CARDSDES = "HS/Magic1/cardInfo.txt";

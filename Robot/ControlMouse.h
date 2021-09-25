@@ -1,5 +1,6 @@
 #pragma once
 #include<Windows.h>
+#include <dwmapi.h>
 class ControlMouse
 {
 public:
@@ -13,17 +14,17 @@ public:
 	}
 	void touchPosition(double x, double y)//点击坐标位置
 	{
-		mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, x / screenWidth * 65535, y / screenHeight * 65535, 0, 0);
-		mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+		mouseEventByGameWindow(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, x, y, 0, 0);
+		mouseEventByGameWindow(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
 		Sleep(1000);
 	}
 	void playCard(double x, double y)//出牌
 	{
-		mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE , x / screenWidth * 65535, y / screenHeight * 65535, 0, 0);
-		mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+		mouseEventByGameWindow(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE , x, y, 0, 0);
+		mouseEventByGameWindow(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
 		Sleep(1000);
-		mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, 500.0 / screenWidth * 65535, 400.0 / screenHeight * 65535, 0, 0);
-		mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+		mouseEventByGameWindow(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, 500.0, 400.0, 0, 0);
+		mouseEventByGameWindow(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
 		Sleep(1000);
 	}
 	void playCardToPlayer(double x, double y)
@@ -36,17 +37,17 @@ public:
 		{
 			x += stepx / 20;
 			y += stepy / 20;
-			mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, x / screenWidth * 65535, y / screenHeight * 65535, 0, 0);
+			mouseEventByGameWindow(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, x, y, 0, 0);
 			Sleep(100);
 		}
-		mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, 800.0 / screenWidth * 65535, 180.0 / screenHeight * 65535, 0, 0);
+		mouseEventByGameWindow(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, 800.0, 180.0, 0, 0);
 		Sleep(500);
-		mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+		mouseEventByGameWindow(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
 		Sleep(500);
 	}
 	void moveToPosition(double x, double y)//移动到坐标位置
 	{
-		mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, x / screenWidth * 65535, y / screenHeight * 65535, 0, 0);
+		mouseEventByGameWindow(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, x, y, 0, 0);
 		Sleep(500);
 	}
 	void fightMonster(double x, double y, double x1, double y1)
@@ -57,27 +58,40 @@ public:
 		Sleep(500);
 	}
 private:
-	HWND hWnd;
-	int screenWidth;
-	int screenHeight;
+	void mouseEventByGameWindow(DWORD dwFlags, double dx, double dy, DWORD dwData, ULONG_PTR dwExtraInfo)
+	{
+		dx += m_gameRect.left;
+		dy += m_gameRect.top;
+		mouse_event(dwFlags, dx / m_screenWidth * 65535, dy / m_screenHeight * 65535, dwData, dwExtraInfo);
+	}
+
+	HWND m_gameHwnd;
+	RECT m_gameRect;
+	int m_screenWidth;
+	int m_screenHeight;
 	static ControlMouse* self;
 	ControlMouse()
 	{
-		hWnd = ::FindWindow("UnityWndClass", CARDGAME);
-		screenWidth = GetSystemMetrics(SM_CXSCREEN);
-		screenHeight = GetSystemMetrics(SM_CYSCREEN);
-		SetForegroundWindow(hWnd);
-		::SetActiveWindow(hWnd);
-		RECT rc;
-		::GetWindowRect(hWnd, &rc);
-		RECT rcClient;
-		::GetClientRect(hWnd, &rcClient);
-		POINT wnd;
-		wnd.x = rcClient.left;
-		wnd.y = rcClient.top;
-		::ClientToScreen(hWnd, &wnd);
-		::MoveWindow(hWnd, 0, 0, rc.right - rc.left, rc.bottom - rc.top, true);
-		::GetWindowRect(hWnd, &rc);
+		m_gameHwnd = ::FindWindow("UnityWndClass", CARDGAME);
+		m_screenWidth = GetSystemMetrics(SM_CXSCREEN);
+		m_screenHeight = GetSystemMetrics(SM_CYSCREEN);
+		SetForegroundWindow(m_gameHwnd);
+		::SetActiveWindow(m_gameHwnd);
+		//RECT clientRect;
+		//::GetClientRect(m_gameHwnd, &clientRect);
+		//POINT clientTopLeft;
+		//clientTopLeft.x = clientRect.left;
+		//clientTopLeft.y = clientRect.top;
+		//::ClientToScreen(m_gameHwnd, &clientTopLeft);
+		//POINT clientBottomRight;
+		//clientBottomRight.x = clientRect.right;
+		//clientBottomRight.y = clientRect.bottom;
+		//::ClientToScreen(m_gameHwnd, &clientBottomRight);
+		//m_gameRect.left = clientTopLeft.x;
+		//m_gameRect.top = clientTopLeft.y;
+		//m_gameRect.right = clientBottomRight.x;
+		//m_gameRect.bottom = clientBottomRight.y;
+		::DwmGetWindowAttribute(m_gameHwnd, DWMWA_EXTENDED_FRAME_BOUNDS, &m_gameRect, sizeof(m_gameRect));
 	}
 };
 ControlMouse *ControlMouse::self = NULL;
