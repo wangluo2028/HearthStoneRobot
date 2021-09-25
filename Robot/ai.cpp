@@ -28,7 +28,7 @@ void AI::startGame(GameInfo &gameInfo)
 	controlMouse->touchPosition(594, 632);//选择法师
 	controlMouse->touchPosition(1164, 760);//点击Play按钮
 	//controlMouse->touchPosition(1187, 193); // 选择猎人
-	controlMouse->touchPosition(1187, 222); // 选择战士
+	controlMouse->touchPosition(1187, 320); // 选择战士
 	controlMouse->touchPosition(1164, 760); //点击Play按钮
 	Sleep(6000);//延时6s
 	gameInfo.state = STATE_CHANGECARDSTART;

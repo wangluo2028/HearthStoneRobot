@@ -537,6 +537,8 @@ void ProcessImage::recoSelfMonster(Mat src, GameInfo &gameInfo)
 	//imshow("yuan", src);
 	//imshow("floor", floor);
 	subtract(floor_gray, gray, out);
+	imshow("out", out);
+	waitKey(0);
 	cout << "当前场面减去场面背景成功！" << endl;
 	Mat thr;
 	threshold(out, thr, 40, 255, CV_THRESH_BINARY);
